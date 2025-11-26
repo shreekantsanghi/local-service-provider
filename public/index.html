@@ -20,6 +20,12 @@
         padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center;
         background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
+    .brand-logo {
+        display: flex; align-items: center; cursor: pointer;
+    }
+    .brand-logo img {
+        height: 45px; width: auto; margin-right: 12px;
+    }
     .landing-hero {
         background: linear-gradient(135deg, var(--primary), #004494);
         color: white; padding: 4rem 2rem; text-align: center;
@@ -294,11 +300,11 @@
 </head>
 <body>
 
-<!-- NEW: LANDING PAGE -->
+<!-- LANDING PAGE -->
 <div id="landing-page">
     <header class="landing-header">
-        <div style="display: flex; align-items: center;">
-            <img src="logo.jpeg" alt="Logo" style="height: 50px; margin-right: 15px;">
+        <div class="brand-logo">
+            <img src="logo.jpeg" alt="Logo">
             <h2 style="margin:0; color:var(--primary);">Local Services</h2>
         </div>
         <div id="landing-nav" style="display:flex; align-items:center;">
@@ -364,11 +370,11 @@
     </footer>
 </div>
 
-<!-- NEW: PROFILE PAGE -->
+<!-- PROFILE PAGE -->
 <div id="profile-page">
     <header class="landing-header">
-        <div style="display: flex; align-items: center; cursor: pointer;" onclick="goHome()">
-            <img src="logo.jpeg" alt="Logo" style="height: 50px; margin-right: 15px;">
+        <div class="brand-logo" onclick="goHome()">
+            <img src="logo.jpeg" alt="Logo">
             <h2 style="margin:0; color:var(--primary);">Local Services</h2>
         </div>
         <button class="nav-btn btn-home" onclick="goHome()">Back to Home</button>
@@ -414,11 +420,11 @@
     </div>
 </div>
 
-<!-- NEW: CONTACT US PAGE -->
+<!-- CONTACT US PAGE -->
 <div id="contact-page">
     <header class="landing-header">
-        <div style="display: flex; align-items: center; cursor: pointer;" onclick="goHome()">
-            <img src="logo.jpeg" alt="Logo" style="height: 50px; margin-right: 15px;">
+        <div class="brand-logo" onclick="goHome()">
+            <img src="logo.jpeg" alt="Logo">
             <h2 style="margin:0; color:var(--primary);">Local Services</h2>
         </div>
         <button class="nav-btn btn-home" onclick="goHome()">Back to Home</button>
@@ -638,8 +644,8 @@
 <!-- MAIN APP (Initially Hidden) -->
 <div id="main-app">
     <header>
-        <div style="display: flex; align-items: center; cursor: pointer;" onclick="goHome()">
-            <img src="logo.jpeg" alt="Logo" style="height: 50px; margin-right: 15px;">
+        <div class="brand-logo" onclick="goHome()">
+            <img src="logo.jpeg" alt="Logo">
             <h3 style="margin:0; color:var(--primary);">Local Services Finder</h3>
         </div>
         <div style="display:flex; align-items:center;">
@@ -680,11 +686,8 @@
     let allProviders = []; 
     let map, markersLayer;
     let trackingMap, trackUserMarker, trackProviderMarker, trackPolyline, trackInterval;
-    let currentProviderPhone = "";
-    let currentRating = 0;
-    let currentBookingProvider = null; 
-    let currentBookingId = null; // New global to track active booking
-    let onAlertClose = null; 
+    // UPDATED: Added callTimer to globals
+    let currentProviderPhone = "", currentRating = 0, currentBookingProvider = null, currentBookingId = null, onAlertClose = null, callTimer = null; 
 
     // --- CUSTOM ALERT LOGIC ---
     function showCustomAlert(message, title = "Notice", icon = "⚠️", callback = null) {
@@ -1035,8 +1038,12 @@
         document.getElementById('call-status').textContent = "Connected 00:00";
         document.getElementById('call-actions').classList.add('hidden');
         document.getElementById('call-active-actions').classList.remove('hidden');
+        
         let secs = 0;
-        const callTimer = setInterval(() => {
+        if (callTimer) clearInterval(callTimer); // Clear existing if any
+        
+        // UPDATED: Assigned to global callTimer variable so we can stop it on manual end
+        callTimer = setInterval(() => {
             secs++;
             const fmt = secs < 10 ? `0${secs}` : secs;
             document.getElementById('call-status').textContent = `Connected 00:${fmt}`;
@@ -1108,9 +1115,17 @@
     }
 
     function declineCall() {
+        // UPDATED: Stop the timer if user clicks "End Call" manually
+        if (callTimer) clearInterval(callTimer);
+        
         const providerName = document.getElementById('call-name').textContent;
         document.getElementById('call-overlay').style.display = 'none';
-        showCustomAlert('Service has started! The provider is at your location.', 'Service Started', '✅', () => showFeedback(providerName));
+        
+        showCustomAlert('Service has started! The provider is at your location.', 'Service Started', '✅', () => {
+            setTimeout(() => {
+                showFeedback(providerName);
+            }, 5000);
+        });
     }
 
     function getMockRoute(start, end) {
@@ -1160,8 +1175,6 @@
         let currentFrame = 0;
         let segmentIndex = 0;
         
-        const startEtaMins = provider.etaMinutes || 15;
-
         if (trackInterval) clearInterval(trackInterval);
 
         trackInterval = setInterval(() => {
