@@ -6,9 +6,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
     <style>
-    :root { --primary: #0066cc; --bg: #f4f7f6; --white: #fff; --accent: #ff9900; --success: #28a745; }
+    :root { --primary: #0066cc; --bg: #f4f7f6; --white: #fff; --accent: #ff9900; --success: #28a745; --text-dark: #333; }
     body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); height: 100vh; display: flex; flex-direction: column; }
     
+    /* --- LANDING PAGE STYLES --- */
+    #landing-page {
+        display: flex; flex-direction: column; height: 100%; overflow-y: auto; background: white;
+    }
+    .landing-header {
+        padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center;
+        background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    .landing-hero {
+        background: linear-gradient(135deg, var(--primary), #004494);
+        color: white; padding: 4rem 2rem; text-align: center;
+    }
+    .landing-hero h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+    .landing-hero p { font-size: 1.2rem; opacity: 0.9; margin-bottom: 2rem; }
+    .cta-btn {
+        background: var(--accent); color: white; border: none; padding: 15px 30px;
+        font-size: 1.1rem; font-weight: bold; border-radius: 30px; cursor: pointer;
+        transition: transform 0.2s; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .cta-btn:hover { transform: scale(1.05); }
+
+    .services-section { padding: 3rem 2rem; text-align: center; background: white; }
+    .services-grid {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px;
+        max-width: 800px; margin: 30px auto 0;
+    }
+    .svc-card {
+        padding: 20px; border: 1px solid #eee; border-radius: 10px; transition: 0.3s;
+        cursor: pointer; background: #f9f9f9;
+    }
+    .svc-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); background: white; border-color: var(--primary); }
+    .svc-icon { font-size: 2.5rem; display: block; margin-bottom: 10px; }
+
+    .landing-footer {
+        background: #2c3e50; color: white; padding: 3rem 2rem; text-align: center; margin-top: auto;
+    }
+    .reviews-container {
+        display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 20px;
+    }
+    .review-card {
+        background: rgba(255,255,255,0.1); padding: 20px; border-radius: 8px;
+        width: 250px; text-align: left; font-size: 0.9rem;
+    }
+    .review-author { display: block; margin-top: 10px; font-weight: bold; color: var(--accent); }
+
     /* --- MODAL STYLES --- */
     .modal-overlay {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -81,7 +126,7 @@
     .btn-cancel { background: #dc3545; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 1rem; }
 
     /* --- APP LAYOUT --- */
-    #main-app { display: flex; height: 100%; flex-direction: column; }
+    #main-app { display: none; height: 100%; flex-direction: column; } /* Hidden by default */
     header { background: var(--white); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
     header h3 { margin: 0; color: var(--primary); }
     
@@ -123,6 +168,73 @@
 </head>
 <body>
 
+<!-- NEW: LANDING PAGE -->
+<div id="landing-page">
+    <header class="landing-header">
+        <h2 style="margin:0; color:var(--primary);">Local Services</h2>
+        <div id="landing-nav">
+             <!-- JS will inject Login/Signup here -->
+        </div>
+    </header>
+
+    <section class="landing-hero">
+        <h1>Expert Help at Your Doorstep</h1>
+        <p>Connect with trusted local professionals for all your home service needs.</p>
+        <button class="cta-btn" onclick="enterApp()">Find a Professional</button>
+    </section>
+
+    <section class="services-section">
+        <h2 style="color:var(--text-dark);">Our Services</h2>
+        <p style="color:#666;">We provide a wide range of services to keep your home running smoothly.</p>
+        
+        <div class="services-grid">
+            <div class="svc-card" onclick="enterApp('Electrician')">
+                <span class="svc-icon">⚡</span>
+                <strong>Electrician</strong>
+            </div>
+            <div class="svc-card" onclick="enterApp('Plumber')">
+                <span class="svc-icon">🔧</span>
+                <strong>Plumber</strong>
+            </div>
+            <div class="svc-card" onclick="enterApp('Carpenter')">
+                <span class="svc-icon">🔨</span>
+                <strong>Carpenter</strong>
+            </div>
+            <div class="svc-card" onclick="enterApp('Driver')">
+                <span class="svc-icon">🚗</span>
+                <strong>Driver</strong>
+            </div>
+            <div class="svc-card" onclick="enterApp('Painter')">
+                <span class="svc-icon">🎨</span>
+                <strong>Painter</strong>
+            </div>
+            <div class="svc-card" onclick="enterApp('Cleaner')">
+                <span class="svc-icon">🧹</span>
+                <strong>Cleaner</strong>
+            </div>
+        </div>
+    </section>
+
+    <footer class="landing-footer">
+        <h3>Trusted by Neighbors Like You</h3>
+        <div class="reviews-container">
+            <div class="review-card">
+                "Absolutely life-saving! The electrician arrived within 20 minutes and fixed my fuse box immediately."
+                <span class="review-author">- Rahul, Indiranagar</span>
+            </div>
+            <div class="review-card">
+                "Transparent pricing and very professional behavior. I use this app for all my plumbing needs now."
+                <span class="review-author">- Priya, Koramangala</span>
+            </div>
+            <div class="review-card">
+                "Found a reliable driver for my outstation trip at a great price. Highly recommended!"
+                <span class="review-author">- Amit, Whitefield</span>
+            </div>
+        </div>
+        <p style="margin-top:40px; opacity:0.6;">&copy; 2024 Local Services Finder. All rights reserved.</p>
+    </footer>
+</div>
+
 <!-- AUTH MODAL -->
 <div id="auth-overlay" class="modal-overlay">
     <div class="modal-box">
@@ -134,14 +246,12 @@
         </div>
         <p id="auth-error" class="error-msg"></p>
 
-        <!-- LOGIN FORM -->
         <form id="login-form">
             <div class="input-group"><label>Email</label><input type="email" id="login-email" required></div>
             <div class="input-group"><label>Password</label><input type="password" id="login-password" required></div>
             <button type="submit" class="btn-primary">Login</button>
         </form>
 
-        <!-- SIGNUP FORM -->
         <form id="signup-form" class="hidden">
             <div class="input-group">
                 <label>I am a...</label>
@@ -220,7 +330,7 @@
     </div>
 </div>
 
-<!-- MAIN APP -->
+<!-- MAIN APP (Initially Hidden) -->
 <div id="main-app">
     <header>
         <h3 onclick="goHome()" style="cursor:pointer">Local Services Finder</h3>
@@ -261,11 +371,8 @@
 <script>
     let allProviders = []; 
     let map, markersLayer;
-    
-    // Tracking Global Vars
     let trackingMap, trackUserMarker, trackProviderMarker, trackPolyline, trackInterval;
 
-    // --- API HELPER ---
     function getApiBaseUrl() {
         if (window.location.protocol === 'blob:' || window.location.protocol === 'file:') {
             return 'http://localhost:3000';
@@ -273,16 +380,41 @@
         return '';
     }
 
-    // --- UI FUNCTIONS ---
+    // --- NAVIGATION ---
+    function enterApp(service = '') {
+        document.getElementById('landing-page').style.display = 'none';
+        document.getElementById('main-app').style.display = 'flex';
+        
+        // Ensure map renders correctly after being unhidden
+        setTimeout(() => {
+            initMap();
+            map.invalidateSize();
+        }, 100);
+
+        // Pre-select service if clicked from landing page
+        if (service) {
+            document.getElementById('serviceSelect').value = service;
+        }
+        
+        loadProviders();
+        updateNav();
+    }
+
     function goHome() {
         stopTracking();
         closeDetails();
         closeAuth();
+        document.getElementById('main-app').style.display = 'none';
+        document.getElementById('landing-page').style.display = 'flex';
+        
+        // Reset Search
         document.getElementById('serviceSelect').value = "";
         document.getElementById('distanceSelect').value = "";
-        loadProviders();
+        
+        updateLandingNav();
     }
 
+    // --- AUTH UI ---
     function openAuth(mode) {
         document.getElementById('auth-overlay').style.display = 'flex';
         switchTab(mode);
@@ -305,7 +437,44 @@
         document.getElementById('provider-fields').classList.toggle('hidden', role !== 'provider');
     }
 
-    // --- DETAILS & BOOKING ---
+    function logout() { 
+        localStorage.removeItem('user'); 
+        updateNav(); 
+        updateLandingNav();
+        window.location.reload(); 
+    }
+
+    // Update Main App Nav
+    function updateNav() {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const nav = document.getElementById('nav-container');
+        if (user) {
+            nav.innerHTML = `<span style="margin-right:15px; font-weight:bold;">Hi, ${user.name}</span>
+                             <button onclick="logout()" class="nav-btn btn-logout">Logout</button>`;
+        } else {
+            nav.innerHTML = `<button onclick="openAuth('login')" class="nav-btn btn-login">Login</button>
+                             <button onclick="openAuth('signup')" class="nav-btn btn-signup">Sign Up</button>`;
+        }
+    }
+
+    // Update Landing Page Nav
+    function updateLandingNav() {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const nav = document.getElementById('landing-nav');
+        if (user) {
+            nav.innerHTML = `
+                <span style="margin-right:15px; font-weight:bold; color:var(--primary);">Hi, ${user.name}</span>
+                <button onclick="logout()" class="nav-btn btn-logout">Logout</button>
+            `;
+        } else {
+            nav.innerHTML = `
+                <button onclick="openAuth('login')" class="nav-btn btn-login">Login</button>
+                <button onclick="openAuth('signup')" class="nav-btn btn-signup">Sign Up</button>
+            `;
+        }
+    }
+
+    // --- TRACKING & MAPS ---
     function showDetails(id) {
         const p = allProviders.find(prov => prov._id === id);
         if (!p) return;
@@ -333,66 +502,55 @@
             return;
         }
         
-        // Start Live Tracking Flow
         closeDetails();
         const p = allProviders.find(prov => prov._id === id);
         startLiveTracking(p);
     }
 
-    // --- LIVE TRACKING LOGIC ---
     function startLiveTracking(provider) {
         const overlay = document.getElementById('tracking-overlay');
         overlay.style.display = 'flex';
         
-        // Update Info
         document.getElementById('track-name').textContent = provider.name;
         document.getElementById('track-service').textContent = provider.service;
-        document.getElementById('track-time').textContent = "1 min"; // Initial display
+        document.getElementById('track-time').textContent = "1 min"; 
         
-        // Mock phone number
         const randomPhone = "+91 " + Math.floor(9000000000 + Math.random() * 900000000);
         document.getElementById('track-phone').textContent = `📞 ${randomPhone}`;
 
-        // Determine User Location (Browser Geolocation or Default)
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (pos) => initTrackingMap(pos.coords.latitude, pos.coords.longitude, provider),
-                () => initTrackingMap(12.9716, 77.5946, provider) // Fallback: Bangalore Center
+                () => initTrackingMap(12.9716, 77.5946, provider) 
             );
         } else {
             initTrackingMap(12.9716, 77.5946, provider);
         }
     }
 
-    // Generate a "city-block" style path for realism
     function getMockRoute(start, end) {
         const latDiff = end[0] - start[0];
         const lngDiff = end[1] - start[1];
-        
         return [
             start,
-            [start[0] + latDiff * 0.2, start[1]],                  // Move North/South 20%
-            [start[0] + latDiff * 0.2, start[1] + lngDiff * 0.5], // Turn & move East/West 50%
-            [start[0] + latDiff * 0.8, start[1] + lngDiff * 0.5], // Turn & move North/South to 80%
-            [start[0] + latDiff * 0.8, end[1]],                   // Turn & move East/West to 100%
-            end                                                   // Final straight
+            [start[0] + latDiff * 0.2, start[1]],
+            [start[0] + latDiff * 0.2, start[1] + lngDiff * 0.5],
+            [start[0] + latDiff * 0.8, start[1] + lngDiff * 0.5],
+            [start[0] + latDiff * 0.8, end[1]],
+            end
         ];
     }
 
     function initTrackingMap(userLat, userLng, provider) {
-        // Initialize Map if not exists
         if (!trackingMap) {
             trackingMap = L.map('tracking-map');
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(trackingMap);
         }
-        
         setTimeout(() => trackingMap.invalidateSize(), 100);
 
-        // Icons
         const userIcon = L.divIcon({ html: '🏠', className: 'dummy', iconSize: [24, 24], iconAnchor: [12, 12] });
         const providerIcon = L.divIcon({ html: '🚗', className: 'dummy', iconSize: [24, 24], iconAnchor: [12, 12] });
 
-        // Reset Layers
         if (trackUserMarker) trackingMap.removeLayer(trackUserMarker);
         if (trackProviderMarker) trackingMap.removeLayer(trackProviderMarker);
         if (trackPolyline) trackingMap.removeLayer(trackPolyline);
@@ -400,21 +558,16 @@
         const startPoint = [provider.lat, provider.lng];
         const endPoint = [userLat, userLng];
 
-        // 1. Setup User and Provider Markers
         trackUserMarker = L.marker(endPoint, {icon: userIcon}).addTo(trackingMap).bindPopup("You");
         trackProviderMarker = L.marker(startPoint, {icon: providerIcon}).addTo(trackingMap).bindPopup(provider.name);
 
-        // 2. Generate Realistic Path
         const routePoints = getMockRoute(startPoint, endPoint);
         trackPolyline = L.polyline(routePoints, {color: '#0066cc', weight: 4, dashArray: '10, 10', opacity: 0.7}).addTo(trackingMap);
         
-        // Fit Bounds
-        const bounds = L.latLngBounds(routePoints);
-        trackingMap.fitBounds(bounds, {padding: [50, 50]});
+        trackingMap.fitBounds(L.latLngBounds(routePoints), {padding: [50, 50]});
 
-        // --- ANIMATION CONFIGURATION ---
-        const duration = 60000; // 60 Seconds (1 Minute)
-        const frameRate = 30; // 30ms per frame
+        const duration = 60000; 
+        const frameRate = 30; 
         const totalFrames = duration / frameRate;
         const totalSegments = routePoints.length - 1;
         const framesPerSegment = totalFrames / totalSegments;
@@ -426,26 +579,21 @@
 
         trackInterval = setInterval(() => {
             currentFrame++;
-
-            // Calculate progress (0.0 to 1.0) for current segment
             const progress = (currentFrame % framesPerSegment) / framesPerSegment;
             
-            // Determine current start and end points for the active segment
             const segStart = routePoints[segmentIndex];
             const segEnd = routePoints[segmentIndex + 1];
+            if(!segEnd) return; // Safety check
 
-            // Linear Interpolation
             const lat = segStart[0] + (segEnd[0] - segStart[0]) * progress;
             const lng = segStart[1] + (segEnd[1] - segStart[1]) * progress;
 
             trackProviderMarker.setLatLng([lat, lng]);
 
-            // Move to next segment if current one finishes
             if (currentFrame % Math.floor(framesPerSegment) === 0) {
                 segmentIndex++;
             }
 
-            // Update Time Display
             const remainingSecs = Math.ceil((totalFrames - currentFrame) * frameRate / 1000);
             if(remainingSecs > 0) {
                  document.getElementById('track-time').textContent = remainingSecs > 59 ? "1 min" : `${remainingSecs} sec`;
@@ -453,7 +601,6 @@
                  document.getElementById('track-time').textContent = "Arrived!";
             }
 
-            // End Animation
             if (segmentIndex >= totalSegments) {
                 clearInterval(trackInterval);
                 document.getElementById('track-time').textContent = "Arrived!";
@@ -467,20 +614,7 @@
         if (trackInterval) clearInterval(trackInterval);
     }
 
-    // --- AUTH LOGIC ---
-    function updateNav() {
-        const user = JSON.parse(localStorage.getItem('user'));
-        const nav = document.getElementById('nav-container');
-        if (user) {
-            nav.innerHTML = `<span style="margin-right:15px; font-weight:bold;">Hi, ${user.name}</span>
-                             <button onclick="logout()" class="nav-btn btn-logout">Logout</button>`;
-        } else {
-            nav.innerHTML = `<button onclick="openAuth('login')" class="nav-btn btn-login">Login</button>
-                             <button onclick="openAuth('signup')" class="nav-btn btn-signup">Sign Up</button>`;
-        }
-    }
-    function logout() { localStorage.removeItem('user'); updateNav(); window.location.reload(); }
-
+    // --- API & INIT ---
     document.getElementById('login-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         try {
@@ -498,6 +632,7 @@
                 localStorage.setItem('user', JSON.stringify(data.user));
                 closeAuth();
                 updateNav();
+                updateLandingNav();
             } else {
                 alert(data.error);
             }
@@ -530,7 +665,6 @@
         } catch(err) { console.error(err); }
     });
 
-    // --- DATA LOADING ---
     function initMap() {
         if(map) return;
         map = L.map('map').setView([12.9716, 77.5946], 12);
@@ -542,14 +676,11 @@
         const svc = document.getElementById('serviceSelect').value;
         const dist = document.getElementById('distanceSelect').value;
         
-        // FIX: Use URLSearchParams for clean URL construction
         const params = new URLSearchParams();
         if (svc) params.append('service', svc);
         if (dist) params.append('maxDistanceKm', dist);
 
         const queryString = params.toString();
-        
-        // FIX: Detect environment to prevent "Failed to parse URL" in blobs
         const apiBase = getApiBaseUrl();
         const url = queryString ? `${apiBase}/api/providers?${queryString}` : `${apiBase}/api/providers`;
 
@@ -589,9 +720,9 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         updateNav();
-        initMap();
-        loadProviders();
-
+        updateLandingNav();
+        // Removed initial map load. Map loads only when "Enter App" is clicked.
+        
         document.getElementById('searchBtn').addEventListener('click', () => {
             const user = JSON.parse(localStorage.getItem('user'));
             if(user) {
